@@ -44,7 +44,7 @@ async function uploadToImgBB(base64Image) {
   formData.append("image", base64Image);
 
   const response = await axios.post("https://api.imgbb.com/1/upload", formData);
-  return response.data.data.url; 
+  return response.data.data.url;
 }
 
 
@@ -69,7 +69,6 @@ app.post('/register', async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = { name, email, photoURL, password: hashedPassword };
-
     await usersCollection.insertOne(newUser);
 
     const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "7d" });
@@ -79,18 +78,15 @@ app.post('/register', async (req, res) => {
   }
 });
 
+
 app.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await usersCollection.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ message: "No user found with this email." });
-    }
+    if (!user) return res.status(400).json({ message: "No user found with this email." });
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(400).json({ message: "Incorrect password." });
-    }
+    if (!isPasswordValid) return res.status(400).json({ message: "Incorrect password." });
 
     const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "7d" });
     res.status(200).json({ message: "Login successful!", token });
@@ -98,6 +94,7 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ message: "Server error", error });
   }
 });
+
 
 app.post('/google-login', async (req, res) => {
   try {
@@ -156,6 +153,7 @@ app.post('/courses', async (req, res) => {
   }
 });
 
+
 app.put('/courses/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -167,6 +165,7 @@ app.put('/courses/:id', async (req, res) => {
   }
 });
 
+
 app.delete('/courses/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -177,9 +176,11 @@ app.delete('/courses/:id', async (req, res) => {
   }
 });
 
+
 app.get('/', (req, res) => {
   res.send('Online Learning Platform API is running...');
 });
+
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
