@@ -26,7 +26,7 @@ let coursesCollection;
 
 async function run() {
   try {
-    await client.connect();
+    //await client.connect();
     const db = client.db('onlineLearning');
     usersCollection = db.collection('users');
     coursesCollection = db.collection('courses');
