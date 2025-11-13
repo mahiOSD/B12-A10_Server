@@ -155,6 +155,20 @@ app.post('/courses', async (req, res) => {
 });
 
 
+app.get('/my-courses', async (req, res) => {
+  try {
+    const { email } = req.query;
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const myCourses = await coursesCollection.find({ ownerEmail: email }).toArray();
+    res.status(200).json(myCourses);
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err });
+  }
+});
+
 app.put('/courses/:id', async (req, res) => {
   try {
     const { id } = req.params;
