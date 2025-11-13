@@ -204,6 +204,45 @@ app.delete('/courses/:id', async (req, res) => {
 });
 
 
+
+app.post('/enroll/:courseId', async (req, res) => {
+  try {
+    const { courseId } = req.params;
+    const { email } = req.body;
+
+    if (!email) return res.status(400).json({ message: "Email is required" });
+
+    const result = await coursesCollection.updateOne(
+      { _id: new ObjectId(courseId) },
+      { $addToSet: { enrolledUsers: email } } 
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    res.status(200).json({ message: "Enrolled successfully!" });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err });
+  }
+});
+
+
+
+app.get('/enrolled-courses', async (req, res) => {
+  try {
+    const { email } = req.query;
+    if (!email) return res.status(400).json({ message: "Email is required" });
+
+    const courses = await coursesCollection.find({ enrolledUsers: email }).toArray();
+    res.status(200).json(courses);
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err });
+  }
+});
+
+
+
 app.get('/', (req, res) => {
   res.send('Online Learning Platform API is running...');
 });
