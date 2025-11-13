@@ -181,6 +181,18 @@ app.put('/courses/:id', async (req, res) => {
 });
 
 
+app.get('/courses/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const course = await coursesCollection.findOne({ _id: new ObjectId(id) });
+    if (!course) return res.status(404).json({ message: "Course not found" });
+    res.status(200).json(course);
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err });
+  }
+});
+
+
 app.delete('/courses/:id', async (req, res) => {
   try {
     const { id } = req.params;
