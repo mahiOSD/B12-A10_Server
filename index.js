@@ -128,9 +128,9 @@ app.get('/courses', async (req, res) => {
 
 app.post('/courses', async (req, res) => {
   try {
-    const { title, description, category, price, instructor, imageBase64 } = req.body;
+    const { title, description, category, price, instructor, imageBase64, ownerEmail } = req.body;
 
-    if (!title || !description || !category || !price || !instructor || !imageBase64) {
+    if (!title || !description || !category || !price || !instructor || !imageBase64 || !ownerEmail) {
       return res.status(400).json({ message: "All fields are required!" });
     }
 
@@ -143,6 +143,7 @@ app.post('/courses', async (req, res) => {
       price,
       instructor,
       image: imageUrl,
+      ownerEmail, 
       createdAt: new Date(),
     };
 
